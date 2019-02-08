@@ -39,7 +39,7 @@ public class SWDatabase {
     public void read(File infile) {
         SWDlogger.info("Lese Datei " + infile.getName() + ". Bitte warten.");
         LinkedList<Object> entrylist = new LinkedList();
-        entrylist = this.readFile(infile);
+        entrylist = (LinkedList<Object>) this.readFile(infile);
         this.lock.lock();
         Iterator<Object> iter = entrylist.iterator();
         while (iter.hasNext()) {
@@ -106,13 +106,13 @@ public class SWDatabase {
             l_temp.add(entry);
         }
         this.l_entrylist = l_temp;
-        HashMap keyToNames = new HashMap();
+        HashMap <String,LinkedList<String>> keyToNames = new HashMap();
         for (SWEntry entry : this.l_entrylist) {
             LinkedList<String> parents = entry.getParents();
             for (String parent : parents) {
                 String[] s;
                 if (!parent.contains("/")) continue;
-                Object key = "";
+                String key = "";
                 TreeSet<String> sorter = new TreeSet<String>();
                 String[] arrstring = s = parent.split("/");
                 int n = arrstring.length;
@@ -135,7 +135,7 @@ public class SWDatabase {
         for (String key : keyToNames.keySet()) {
             LinkedList<String> names = new LinkedList<String>();
             HashMap<String, Boolean> red = new HashMap<String, Boolean>();
-            for (String name : (LinkedList)keyToNames.get(key)) {
+            for (String name : (LinkedList) keyToNames.get(key)) {
                 if (red.containsKey(name)) continue;
                 names.add(name);
                 red.put(name, false);
@@ -202,7 +202,7 @@ public class SWDatabase {
             Iterator<String> parents = l_parents.iterator();
             while (parents.hasNext()) {
                 String parent = this.h_nameToName.get(parents.next());
-                Object temp = new LinkedList();
+                LinkedList temp = new LinkedList();
                 if (this.h_nameToChildren.containsKey(parent)) {
                     temp = this.h_nameToChildren.get(parent);
                 }
