@@ -1,6 +1,6 @@
 package SWDgui;
 
-import SWDdata.SWDatabase;
+import SWDdata.SWDdatabase;
 import SWDgui.SWDrecentlyOpenedFilesManager;
 import SWDgui.SWDvis;
 import SWDgui.requestHandlers.TextParser;
@@ -43,7 +43,7 @@ import org.jgraph.JGraph;
 import org.jgraph.graph.DefaultGraphCell;
 
 public class SWDgui {
-    SWDatabase database = null;
+    SWDdatabase database = null;
     JPanel leftpanel = null;
     JPanel mainpanel = null;
     JMenu fileMenu = null;
@@ -69,7 +69,7 @@ public class SWDgui {
     public static final int SHOW_PPN = 4;
     int searchMode = 2;
 
-    public SWDgui(SWDatabase x) {
+    public SWDgui(SWDdatabase x) {
         this.database = x;
     }
 

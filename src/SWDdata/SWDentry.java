@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class SWEntry {
+class SWDentry {
     static Pattern ppnPattern = Pattern.compile("PPN:\\s\\d\\d*\\w?");
     boolean b_combined = false;
     String s_content = "";
@@ -24,7 +24,7 @@ class SWEntry {
     private boolean b_ppn = false;
     private boolean b_name = false;
 
-    SWEntry(LinkedList<String> namen, boolean zusammengesetzt) {
+    SWDentry(LinkedList<String> namen, boolean zusammengesetzt) {
         this.s_content = "Kein Datensatz vorhanden. Zusammengesetzter Begriff.";
         this.b_combined = true;
         for (String name : namen) {
@@ -52,7 +52,7 @@ class SWEntry {
         this.s_ppn = "000000000";
     }
 
-    SWEntry(LinkedList<String> input) {
+    SWDentry(LinkedList<String> input) {
         Iterator x = input.listIterator();
         while (x.hasNext()) {
             String number = "";

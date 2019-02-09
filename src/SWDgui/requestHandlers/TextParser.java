@@ -1,6 +1,6 @@
 package SWDgui.requestHandlers;
 
-import SWDdata.SWDatabase;
+import SWDdata.SWDdatabase;
 import SWDgui.SWDvis;
 import SWDgui.requestHandlers.OPACParser;
 import SWDio.SWDlogger;
@@ -15,13 +15,13 @@ import java.util.regex.PatternSyntaxException;
 
 public class TextParser {
     private SWDvis graph;
-    private SWDatabase database;
+    private SWDdatabase database;
     int childrenDepth = 0;
     int parentsDepth = 0;
     boolean showSiblings = false;
     int searchMode = 0;
 
-    public TextParser(SWDvis g, SWDatabase d, int c, int p, boolean s, int sm) {
+    public TextParser(SWDvis g, SWDdatabase d, int c, int p, boolean s, int sm) {
         this.graph = g;
         this.database = d;
         this.childrenDepth = c;

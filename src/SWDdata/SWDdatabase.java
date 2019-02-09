@@ -1,6 +1,6 @@
 package SWDdata;
 
-import SWDdata.SWEntry;
+import SWDdata.SWDentry;
 import SWDio.SWDlogger;
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,19 +17,19 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SWDatabase {
+public class SWDdatabase {
     private HashMap<String, String> h_nameToName = new HashMap();
-    private HashMap<String, SWEntry> h_nameToEntry = new HashMap();
-    private LinkedList<SWEntry> l_entrylist = new LinkedList();
+    private HashMap<String, SWDentry> h_nameToEntry = new HashMap();
+    private LinkedList<SWDentry> l_entrylist = new LinkedList();
     private HashMap<String, LinkedList<String>> h_nameToChildren = new HashMap();
     private HashMap<String, LinkedList<String>> h_nameToParents = new HashMap();
     final Pattern pattern = Pattern.compile("^\\d\\d\\d$");
     ReentrantLock lock = new ReentrantLock();
 
-    public SWDatabase() {
+    public SWDdatabase() {
     }
 
-    public SWDatabase(File infile) {
+    public SWDdatabase(File infile) {
         this.l_entrylist = this.readFile(infile);
         this.updateHashes();
         String number = Integer.toString(this.l_entrylist.size());
@@ -38,12 +38,12 @@ public class SWDatabase {
 
     public void read(File infile) {
         SWDlogger.info("Lese Datei " + infile.getName() + ". Bitte warten.");
-        LinkedList<Object> entrylist = new LinkedList();
-        entrylist = (LinkedList<Object>) this.readFile(infile);
+        LinkedList<SWDentry> entrylist = new LinkedList();
+        entrylist = (LinkedList<SWDentry>) this.readFile(infile);
         this.lock.lock();
-        Iterator<Object> iter = entrylist.iterator();
+        Iterator<SWDentry> iter = entrylist.iterator();
         while (iter.hasNext()) {
-            this.l_entrylist.add((SWEntry)iter.next());
+            this.l_entrylist.add((SWDentry)iter.next());
         }
         this.lock.unlock();
         this.updateHashes();
@@ -52,12 +52,12 @@ public class SWDatabase {
         System.gc();
     }
 
-    private LinkedList<SWEntry> readFile(File infile) {
+    private LinkedList<SWDentry> readFile(File infile) {
         this.lock.lock();
-        LinkedList<SWEntry> l_elist = new LinkedList<SWEntry>();
+        LinkedList<SWDentry> l_elist = new LinkedList<SWDentry>();
         try {
             LinkedList<String> l_linelist = new LinkedList<String>();
-            SWEntry entry = null;
+            SWDentry entry = null;
             boolean c = true;
             boolean first = true;
             BufferedReader reader = new BufferedReader(new FileReader(infile));
@@ -73,7 +73,7 @@ public class SWDatabase {
                 if ((s_line = s_line.trim()).isEmpty() || !(m = this.pattern.matcher(s_test = (x = s_line.split("\\s", 2))[0])).matches() && !s_test.equals("SET:")) continue;
                 if (s_test.equals("SET:")) {
                     if (!first) {
-                        entry = new SWEntry(l_linelist);
+                        entry = new SWDentry(l_linelist);
                         l_linelist = new LinkedList();
                         l_linelist.add(s_line);
                         l_elist.add(entry);
@@ -86,7 +86,7 @@ public class SWDatabase {
                 l_linelist.add(s_line);
             }
             if (l_linelist.size() > 0) {
-                entry = new SWEntry(l_linelist);
+                entry = new SWDentry(l_linelist);
                 l_elist.add(entry);
             }
             reader.close();
@@ -100,14 +100,14 @@ public class SWDatabase {
     }
 
     private void processCombinedEntries() {
-        LinkedList<SWEntry> l_temp = new LinkedList<SWEntry>();
-        for (SWEntry entry : this.l_entrylist) {
+        LinkedList<SWDentry> l_temp = new LinkedList<SWDentry>();
+        for (SWDentry entry : this.l_entrylist) {
             if (entry.getCombined()) continue;
             l_temp.add(entry);
         }
         this.l_entrylist = l_temp;
         HashMap <String,LinkedList<String>> keyToNames = new HashMap();
-        for (SWEntry entry : this.l_entrylist) {
+        for (SWDentry entry : this.l_entrylist) {
             LinkedList<String> parents = entry.getParents();
             for (String parent : parents) {
                 String[] s;
@@ -140,18 +140,18 @@ public class SWDatabase {
                 names.add(name);
                 red.put(name, false);
             }
-            SWEntry entry = new SWEntry(names, true);
+            SWDentry entry = new SWDentry(names, true);
             this.l_entrylist.add(entry);
         }
     }
 
     private void updateHashes() {
         this.processCombinedEntries();
-        LinkedList<SWEntry> t = new LinkedList<SWEntry>();
+        LinkedList<SWDentry> t = new LinkedList<SWDentry>();
         HashMap<String, String> names = new HashMap<String, String>();
-        Iterator<SWEntry> iter = this.l_entrylist.descendingIterator();
+        Iterator<SWDentry> iter = this.l_entrylist.descendingIterator();
         while (iter.hasNext()) {
-            SWEntry entry = iter.next();
+            SWDentry entry = iter.next();
             String name = entry.getName();
             if (names.containsKey(name)) {
                 String ppnAlt = (String)names.get(name);
@@ -178,14 +178,14 @@ public class SWDatabase {
         this.h_nameToName = new HashMap();
         this.h_nameToChildren = new HashMap();
         this.h_nameToParents = new HashMap();
-        for (SWEntry entry : this.l_entrylist) {
+        for (SWDentry entry : this.l_entrylist) {
             LinkedList<String> content = entry.getAllNames();
             for (String name : content) {
                 this.h_nameToName.put(name, entry.getName());
                 this.h_nameToEntry.put(name, entry);
             }
         }
-        for (SWEntry entry : this.l_entrylist) {
+        for (SWDentry entry : this.l_entrylist) {
             LinkedList<String> parents = new LinkedList<String>();
             HashMap<String, Boolean> re = new HashMap<String, Boolean>();
             for (String parent : entry.getParents()) {
@@ -196,7 +196,7 @@ public class SWDatabase {
             }
             this.h_nameToParents.put(entry.getName(), parents);
         }
-        for (SWEntry entry : this.l_entrylist) {
+        for (SWDentry entry : this.l_entrylist) {
             String name = entry.getName();
             LinkedList<String> l_parents = entry.getParents();
             Iterator<String> parents = l_parents.iterator();
@@ -226,7 +226,7 @@ public class SWDatabase {
 
     public void printNames() {
         this.lock.lock();
-        for (SWEntry one : this.l_entrylist) {
+        for (SWDentry one : this.l_entrylist) {
             String name = one.getName();
             System.out.println(name);
             Iterator<String> iterr = one.getParents().iterator();
@@ -239,11 +239,11 @@ public class SWDatabase {
 
     public String[] getNames() {
         String[] result = new String[this.l_entrylist.size()];
-        Iterator<SWEntry> iter = this.l_entrylist.iterator();
+        Iterator<SWDentry> iter = this.l_entrylist.iterator();
         int i = 0;
         while (iter.hasNext()) {
             String name;
-            SWEntry x = iter.next();
+            SWDentry x = iter.next();
             result[i] = name = x.getName();
             ++i;
         }
@@ -252,7 +252,7 @@ public class SWDatabase {
 
     public LinkedList<String> getAllNames() {
         LinkedList<String> result = new LinkedList<String>();
-        for (SWEntry entry : this.l_entrylist) {
+        for (SWDentry entry : this.l_entrylist) {
             LinkedList<String> names = entry.getAllNames();
             for (String name : names) {
                 result.add(name);
@@ -261,12 +261,12 @@ public class SWDatabase {
         return result;
     }
 
-    public SWEntry[] getEntries() {
-        SWEntry[] result = new SWEntry[this.l_entrylist.size()];
-        Iterator<SWEntry> iter = this.l_entrylist.iterator();
+    public SWDentry[] getEntries() {
+        SWDentry[] result = new SWDentry[this.l_entrylist.size()];
+        Iterator<SWDentry> iter = this.l_entrylist.iterator();
         int i = 0;
         while (iter.hasNext()) {
-            SWEntry x;
+            SWDentry x;
             result[i] = x = iter.next();
             ++i;
         }
@@ -284,7 +284,7 @@ public class SWDatabase {
     }
 
     public boolean getCombined(String name) {
-        SWEntry entry = this.getEntryByName(name);
+        SWDentry entry = this.getEntryByName(name);
         if (entry != null) {
             return entry.getCombined();
         }
@@ -315,9 +315,9 @@ public class SWDatabase {
         return 0;
     }
 
-    public SWEntry getEntryByName(String s) {
+    public SWDentry getEntryByName(String s) {
         s = s.replaceFirst(" \\(.*\\)", "");
-        SWEntry result = null;
+        SWDentry result = null;
         if (this.h_nameToEntry.containsKey(s)) {
             result = this.h_nameToEntry.get(s);
         }
@@ -325,7 +325,7 @@ public class SWDatabase {
     }
 
     public String getPPNByName(String s) {
-        SWEntry entry = this.getEntryByName(s);
+        SWDentry entry = this.getEntryByName(s);
         if (entry == null) {
             return null;
         }
@@ -345,7 +345,7 @@ public class SWDatabase {
         if (s == null) {
             return "";
         }
-        SWEntry x = this.getEntryByName(s);
+        SWDentry x = this.getEntryByName(s);
         if (x != null) {
             return "PPN: " + x.getPPN() + "\n" + x.getContent();
         }
@@ -354,7 +354,7 @@ public class SWDatabase {
 
     public LinkedList<String> getAllEntriesWithChangeCommentary() {
         LinkedList<String> result = new LinkedList<String>();
-        for (SWEntry entry : this.l_entrylist) {
+        for (SWDentry entry : this.l_entrylist) {
             String name = entry.getChangeCommentary();
             if (name == null) continue;
             result.add(entry.getName());

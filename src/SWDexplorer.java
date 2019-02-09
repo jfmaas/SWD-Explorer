@@ -1,11 +1,11 @@
-import SWDdata.SWDatabase;
+import SWDdata.SWDdatabase;
 import SWDgui.SWDgui;
 import SWDio.SWDlogger;
 
 class SWDexplorer {
     public static void main(String[] args) {
         SWDlogger.setOutfile("SWDlog.log");
-        SWDatabase content = new SWDatabase();
+        SWDdatabase content = new SWDdatabase();
         SWDgui gui = new SWDgui(content);
         gui.createGUI();
     }

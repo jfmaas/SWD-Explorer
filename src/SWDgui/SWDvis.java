@@ -1,6 +1,6 @@
 package SWDgui;
 
-import SWDdata.SWDatabase;
+import SWDdata.SWDdatabase;
 import SWDdata.SWDrelation;
 import SWDgui.Sugiyama;
 import SWDio.SWDlogger;
@@ -35,9 +35,9 @@ public class SWDvis {
     HashMap<String, String> isChild = new HashMap();
     HashMap<String, String> colorOf = new HashMap();
     int breaksize = 400;
-    SWDatabase database = null;
+    SWDdatabase database = null;
 
-    public void setDatabase(SWDatabase d) {
+    public void setDatabase(SWDdatabase d) {
         this.database = d;
     }
 

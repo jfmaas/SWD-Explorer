@@ -1,6 +1,6 @@
 package SWDgui.requestHandlers;
 
-import SWDdata.SWDatabase;
+import SWDdata.SWDdatabase;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,10 +8,10 @@ import java.util.LinkedList;
 import java.util.Set;
 
 public class OPACParser {
-    SWDatabase database;
+    SWDdatabase database;
     String input = "";
 
-    public OPACParser(SWDatabase d) {
+    public OPACParser(SWDdatabase d) {
         this.database = d;
     }
 
