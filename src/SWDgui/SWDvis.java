@@ -61,7 +61,7 @@ public class SWDvis {
             if (!NameToPos.containsKey(s_child) || !NameToPos.containsKey(s_parent)) continue;
             ++i_edgeCount;
         }
-        Object[] cells = new DefaultGraphCell[l_cells.size() + i_edgeCount];
+        DefaultGraphCell[] cells = new DefaultGraphCell[l_cells.size() + i_edgeCount];
         Iterator<DefaultGraphCell> iter = l_cells.iterator();
         int c = 0;
         while (iter.hasNext()) {
@@ -76,8 +76,8 @@ public class SWDvis {
             int i_source = NameToPos.get(s_parent);
             int i_target = NameToPos.get(s_child);
             DefaultEdge edge = new DefaultEdge();
-            edge.setSource((Object)cells[i_source].getChildAt(0));
-            edge.setTarget((Object)cells[i_target].getChildAt(0));
+            edge.setSource((DefaultGraphCell)cells[i_source].getChildAt(0));
+            edge.setTarget((DefaultGraphCell)cells[i_target].getChildAt(0));
             cells[k] = edge;
             int arrow = 1;
             GraphConstants.setLineEnd((Map)edge.getAttributes(), (int)arrow);
@@ -98,7 +98,7 @@ public class SWDvis {
         }
         int max = 0;
         for (SWDrelation r : this.pcRelations) {
-            Iterator<LinkedList<String>> child = r.getChild();
+            String child = r.getChild();
             String parent = r.getParent();
             if (!this.toShow.containsKey(child) || !this.toShow.containsKey(parent)) continue;
             nameToChildren.put(parent, (Integer)nameToChildren.get(parent) + 1);
@@ -107,19 +107,19 @@ public class SWDvis {
         }
         LinkedList res = new LinkedList();
         for (LinkedList<String> ebene : ebenen) {
-            ArrayList<Object> w = new ArrayList<Object>(max);
+            ArrayList<LinkedList<String>> w = new ArrayList<LinkedList<String>>(max);
             int t = 0;
             while (t < max + 1) {
-                w.add(new LinkedList());
+                w.add(new LinkedList<String>());
                 ++t;
             }
             for (String name : ebene) {
-                LinkedList temp = (LinkedList)w.get((Integer)nameToChildren.get(name));
+                LinkedList<String> temp = (LinkedList<String> )w.get((Integer)nameToChildren.get(name));
                 temp.add(name);
-                w.set((Integer)nameToChildren.get(name), temp);
+                w.set(nameToChildren.get(name), temp);
             }
             LinkedList<String> o = new LinkedList<String>();
-            for (LinkedList d : w) {
+            for (LinkedList<String> d : w) {
                 for (String name : d) {
                     o.add(name);
                 }
@@ -231,14 +231,14 @@ public class SWDvis {
             temp.add(tmp);
         }
         for (SWDrelation relation : this.pcRelations) {
-            Iterator child = relation.getChild();
+            String child = relation.getChild();
             String parent = relation.getParent();
             if (!this.toShow.containsKey(child) || !this.toShow.containsKey(parent)) continue;
             int i = 0;
             int r1 = 0;
             int r2 = 0;
             int a = 0;
-            for (HashMap map : temp) {
+            for (HashMap<String, String> map : temp) {
                 if (map.containsKey(child)) {
                     r1 = i;
                     ++a;
@@ -248,9 +248,10 @@ public class SWDvis {
                 }
                 ++i;
             }
-            if (a <= true) continue;
-            HashMap t1 = (HashMap)temp.get(r1);
-            HashMap t2 = (HashMap)temp.get(r2);
+            // TODO: Korrekte Bedingung in folgender Zeile?
+            if (a <= 1) continue;
+            HashMap<String, String> t1 = (HashMap<String, String>) temp.get(r1);
+            HashMap<String, String> t2 = (HashMap<String, String>) temp.get(r2);
             if (r2 < r1) {
                 temp.remove(r1);
                 temp.remove(r2);
@@ -264,7 +265,7 @@ public class SWDvis {
             temp.add(t1);
         }
         LinkedList<String> one = new LinkedList<String>();
-        for (HashMap map : temp) {
+        for (HashMap<String, String> map : temp) {
             if (map.size() != 1) continue;
             for (String z : map.keySet()) {
                 one.add(z);
@@ -274,7 +275,7 @@ public class SWDvis {
             result.add(one);
             result.add(new LinkedList());
         }
-        for (HashMap map : temp) {
+        for (HashMap<String, String> map : temp) {
             LinkedList<String> more = new LinkedList<String>();
             if (map.size() <= 1) continue;
             for (String z : map.keySet()) {
@@ -339,7 +340,7 @@ public class SWDvis {
         GraphLayoutCache view = new GraphLayoutCache((GraphModel)model, (CellViewFactory)new DefaultCellViewFactory());
         JGraph graph = new JGraph((GraphModel)model, view);
         graph.setAutoResizeGraph(true);
-        Object[] cells = new DefaultGraphCell[3];
+        DefaultGraphCell[] cells = new DefaultGraphCell[3];
         cells[0] = new DefaultGraphCell((Object)new String("Hello"));
         GraphConstants.setBounds((Map)cells[0].getAttributes(), (Rectangle2D)new Rectangle2D.Double(20.0, 20.0, 40.0, 20.0));
         GraphConstants.setGradientColor((Map)cells[0].getAttributes(), (Color)Color.orange);

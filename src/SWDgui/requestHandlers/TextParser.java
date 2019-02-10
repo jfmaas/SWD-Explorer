@@ -31,7 +31,7 @@ public class TextParser {
     }
 
     public SWDvis getGraph(String input) {
-        LinkedList<Object> queriedElements = new LinkedList();
+        LinkedList<String> queriedElements = new LinkedList<String>();
         if (this.searchMode == 0) {
             queriedElements = this.getNamesByRegExp(input);
         }

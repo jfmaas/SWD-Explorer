@@ -135,7 +135,7 @@ public class SWDdatabase {
         for (String key : keyToNames.keySet()) {
             LinkedList<String> names = new LinkedList<String>();
             HashMap<String, Boolean> red = new HashMap<String, Boolean>();
-            for (String name : (LinkedList) keyToNames.get(key)) {
+            for (String name : (LinkedList<String>) keyToNames.get(key)) {
                 if (red.containsKey(name)) continue;
                 names.add(name);
                 red.put(name, false);

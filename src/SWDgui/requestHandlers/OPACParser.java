@@ -43,7 +43,7 @@ public class OPACParser {
     }
 
     private LinkedList<String> processTerm(LinkedList<String> eingabe) {
-        LinkedList<Object> result = new LinkedList();
+        LinkedList<String> result = new LinkedList<String>();
         String first = eingabe.removeFirst();
         if (first.equals("(")) {
             int x = 1;

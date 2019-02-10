@@ -299,21 +299,21 @@ public class Sugiyama {
             nameToNumber.put(lone.get(y), y);
             ++y;
         }
-        HashMap row = new HashMap();
+        HashMap<String,TreeSet<Integer>> row = new HashMap<String,TreeSet<Integer>>();
         for (String node : ltosort) {
-            row.put(node, new TreeSet());
+            row.put(node, new TreeSet<Integer>());
         }
         for (SWDrelation rel : this.pcRelations) {
             String parent = rel.getParent();
             String child = rel.getChild();
             if (nameToNumber.containsKey(child) && row.containsKey(parent)) {
-                ((TreeSet)row.get(parent)).add((Integer)nameToNumber.get(child));
+                ((TreeSet<Integer>)row.get(parent)).add((Integer)nameToNumber.get(child));
             }
             if (!nameToNumber.containsKey(parent) || !row.containsKey(child)) continue;
-            ((TreeSet)row.get(child)).add((Integer)nameToNumber.get(parent));
+            ((TreeSet<Integer>)row.get(child)).add((Integer)nameToNumber.get(parent));
         }
         for (String name : row.keySet()) {
-            if (((TreeSet)row.get(name)).size() != 0) continue;
+            if (((TreeSet<Integer>)row.get(name)).size() != 0) continue;
             TreeSet<Integer> insert = new TreeSet<Integer>();
             insert.add(1000);
             row.put(name, insert);
@@ -321,7 +321,7 @@ public class Sugiyama {
         HashMap<Double, String> medianToName = new HashMap<Double, String>();
         HashMap<String, Boolean> h_values = new HashMap<String, Boolean>();
         for (String name : row.keySet()) {
-            TreeSet values = (TreeSet)row.get(name);
+            TreeSet<Integer> values = (TreeSet<Integer>)row.get(name);
             double med = 0.5 * (double)values.size();
             med += 0.5;
             int last = 0;
@@ -363,7 +363,7 @@ public class Sugiyama {
     }
 
     private void removeDummies() {
-        LinkedList<Object> result = new LinkedList<Object>();
+        LinkedList<LinkedList<String>> result = new LinkedList<LinkedList<String>>();
         for (LinkedList<String> einzel : this.layers) {
             LinkedList t = new LinkedList();
             for (String node : einzel) {
