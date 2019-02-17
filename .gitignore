@@ -3,3 +3,7 @@ manifest.mf
 *.class
 nbproject/*
 lib/*
+build/*
+data/*
+*.log
+recentlyOpened.txt
